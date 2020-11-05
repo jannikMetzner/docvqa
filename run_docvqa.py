@@ -708,8 +708,8 @@ def main():
         args.n_gpu = 1
     args.device = device
 
-    if args.overwrite_output_dir and os.path.exists(args.output_dir):
-        shutil.rmtree(args.output_dir)
+    #if args.overwrite_output_dir and os.path.exists(args.output_dir):
+    #    shutil.rmtree(args.output_dir)
     if not os.path.exists(args.output_dir):
         os.makedirs(args.output_dir)
     # Setup logging
