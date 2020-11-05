@@ -7,9 +7,9 @@ CUDA_VISIBLE_DEVICES=0 python run_docvqa.py \
     --max_seq_length 512 \
     --do_train \
     --num_train_epochs 15 \
-    --logging_steps 500 \
+    --logging_steps 1000 \
     --evaluate_during_training \
-    --save_steps 500 \
+    --save_steps 10000 \
     --output_dir ./model \
     --per_gpu_train_batch_size 4 \
     --overwrite_output_dir \
