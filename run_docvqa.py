@@ -375,8 +375,12 @@ def evaluate(args, model, tokenizer, labels, pad_token_label_id, mode, prefix=""
         end_answer_token = example.end_position
 
         answer_string = ''
-        for i in range(start_answer_token, end_answer_token):
-            answer_string = f"{answer_string} ".join(example.doc_tokens[i])
+
+        token_length = end_answer_token - start_answer_token
+
+        if token_length > 0 and token_length < 50:
+            for i in range(start_answer_token, end_answer_token):
+                answer_string = f"{answer_string} ".join(example.doc_tokens[i])
 
         answers = [{"answer_start": start_position_character, "text": answer_string}]
         print(start_position_character)
