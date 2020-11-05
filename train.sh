@@ -2,16 +2,16 @@ CUDA_VISIBLE_DEVICES=0 python run_docvqa.py \
     --data_dir data \
     --model_type layoutlm \
     --model_name_or_path ./models/layoutlm-large-base \
-    --output . \
+    --output ./model \
     --do_lower_case \
     --max_seq_length 512 \
     --do_train \
     --num_train_epochs 15 \
-    --logging_steps 5 \
+    --logging_steps 500 \
     --evaluate_during_training \
     --save_steps 500 \
-    --output_dir ./data/model \
-    --per_gpu_train_batch_size 5 \
+    --output_dir ./model \
+    --per_gpu_train_batch_size 4 \
     --overwrite_output_dir \
     --cache_dir ./cache/models \
     --skip_match_answers \
