@@ -5,5 +5,5 @@ opencv-python
 torch
 torchvision
 tensorboardX
-transformers
-tensorflow-gpu
+transformers==2.4.0
+tensorflow==1.4.0
