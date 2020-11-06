@@ -58,7 +58,7 @@ class DocvqaExample(object):
 class InputFeatures(object):
     """A single set of features of data."""
 
-   
+
     def __init__(self,
                unique_id,
                qas_id,
@@ -92,7 +92,7 @@ class InputFeatures(object):
         self.p_mask = p_mask
 def read_docvqa_examples(input_file, is_training, skip_match_answers=True):
   """Read a SQuAD json file into a list of SquadExample."""
-  with tf.gfile.Open(input_file, "r") as reader:
+  with open(input_file, "r") as reader:
     input_data = json.load(reader)
 
   def is_whitespace(c):
@@ -115,7 +115,7 @@ def read_docvqa_examples(input_file, is_training, skip_match_answers=True):
         end_position = None
         orig_answer_text = None
         is_impossible = False
-        answer = qa["answer"][0]        
+        answer = qa["answer"][0]
         orig_answer_text = answer["text"]
         if is_training:
           if not is_impossible:
@@ -159,7 +159,7 @@ def read_docvqa_examples(input_file, is_training, skip_match_answers=True):
 
 
 def convert_examples_to_features(examples,label_list, tokenizer, max_seq_length,
-                                 doc_stride, max_query_length, is_training, 
+                                 doc_stride, max_query_length, is_training,
                                  pad_token_label_id=-100):
   """Loads a data file into a list of `InputBatch`s."""
 
@@ -172,14 +172,14 @@ def convert_examples_to_features(examples,label_list, tokenizer, max_seq_length,
     if len(query_tokens) > max_query_length:
       query_tokens = query_tokens[0:max_query_length]
     query_label_ids=[0]+[pad_token_label_id] * (len(query_tokens) - 1)
-    
+
     tok_to_orig_index = []
     orig_to_tok_index = []
     all_doc_tokens = []
     all_doc_boxes_tokens = []
     cls_token_box=[0, 0, 0, 0]
     sep_token_box=[1000, 1000, 1000, 1000]
-    pad_token_box=[0, 0, 0, 0] 
+    pad_token_box=[0, 0, 0, 0]
     ques_token_box=[0, 0, 0, 0]
     all_label_ids = []
     for (i, token) in enumerate(example.doc_tokens):
@@ -190,7 +190,7 @@ def convert_examples_to_features(examples,label_list, tokenizer, max_seq_length,
             lab = 1
       elif i == example.end_position:
             lab = 2
-      else:   
+      else:
             lab = 0
       p = [lab] + [pad_token_label_id] * (len(sub_tokens) - 1)
       all_label_ids+=p
@@ -199,8 +199,8 @@ def convert_examples_to_features(examples,label_list, tokenizer, max_seq_length,
         all_doc_tokens.append(sub_token)
         all_doc_boxes_tokens.append(box)
         #p = [lab] + [pad_token_label_id] * (len(sub_tokens) - 1)
-        #all_label_ids+=p        
-            
+        #all_label_ids+=p
+
 
 
     tok_start_position = None
@@ -236,7 +236,7 @@ def convert_examples_to_features(examples,label_list, tokenizer, max_seq_length,
       if start_offset + length == len(all_doc_tokens):
         break
       start_offset += min(length, doc_stride)
-    
+
     #TODO Remove later
     #if len(doc_spans)>1:
     #    continue
@@ -274,7 +274,7 @@ def convert_examples_to_features(examples,label_list, tokenizer, max_seq_length,
         token_is_max_context[len(tokens)] = is_max_context
         tokens.append(all_doc_tokens[split_token_index])
         label_ids.append(all_label_ids[split_token_index])
-        boxes_tokens.append(all_doc_boxes_tokens[split_token_index]) 
+        boxes_tokens.append(all_doc_boxes_tokens[split_token_index])
         segment_ids.append(1)
         p_mask.append(0)
       tokens.append("[SEP]")
@@ -295,14 +295,14 @@ def convert_examples_to_features(examples,label_list, tokenizer, max_seq_length,
         boxes_tokens.append(pad_token_box)
         label_ids.append(pad_token_label_id)
         p_mask.append(1)
-      
+
       assert len(input_ids) == max_seq_length
       assert len(input_mask) == max_seq_length
       assert len(segment_ids) == max_seq_length
       assert len(boxes_tokens) == max_seq_length
-      assert len(label_ids) == max_seq_length      
+      assert len(label_ids) == max_seq_length
       assert len(p_mask) == max_seq_length
-     
+
       start_position = None
       end_position = None
       if is_training and not example.is_impossible:
@@ -331,29 +331,29 @@ def convert_examples_to_features(examples,label_list, tokenizer, max_seq_length,
       #  label_ids[end_position]=1
 
       if example_index < 20:
-        tf.logging.info("*** Example ***")
-        tf.logging.info("unique_id: %s" % (unique_id))
-        tf.logging.info("example_index: %s" % (example_index))
-        tf.logging.info("doc_span_index: %s" % (doc_span_index))
-        tf.logging.info("tokens: %s" % " ".join(
+        tf.compat.v1.logging.info("*** Example ***")
+        tf.compat.v1.logging.info("unique_id: %s" % (unique_id))
+        tf.compat.v1.logging.info("example_index: %s" % (example_index))
+        tf.compat.v1.logging.info("doc_span_index: %s" % (doc_span_index))
+        tf.compat.v1.logging.info("tokens: %s" % " ".join(
             [tokenization.printable_text(x) for x in tokens]))
-        tf.logging.info("token_to_orig_map: %s" % " ".join(
+        tf.compat.v1.logging.info("token_to_orig_map: %s" % " ".join(
             ["%d:%d" % (x, y) for (x, y) in six.iteritems(token_to_orig_map)]))
-        tf.logging.info("token_is_max_context: %s" % " ".join([
+        tf.compat.v1.logging.info("token_is_max_context: %s" % " ".join([
             "%d:%s" % (x, y) for (x, y) in six.iteritems(token_is_max_context)
         ]))
-        tf.logging.info("input_ids: %s" % " ".join([str(x) for x in input_ids]))
-        tf.logging.info(
+        tf.compat.v1.logging.info("input_ids: %s" % " ".join([str(x) for x in input_ids]))
+        tf.compat.v1.logging.info(
             "input_mask: %s" % " ".join([str(x) for x in input_mask]))
-        tf.logging.info(
+        tf.compat.v1.logging.info(
             "segment_ids: %s" % " ".join([str(x) for x in segment_ids]))
         if is_training and example.is_impossible:
-          tf.logging.info("impossible example")
+          tf.compat.v1.logging.info("impossible example")
         if is_training and not example.is_impossible:
           answer_text = " ".join(tokens[start_position:(end_position + 1)])
-          tf.logging.info("start_position: %d" % (start_position))
-          tf.logging.info("end_position: %d" % (end_position))
-          tf.logging.info(
+          tf.compat.v1.logging.info("start_position: %d" % (start_position))
+          tf.compat.v1.logging.info("end_position: %d" % (end_position))
+          tf.compat.v1.logging.info(
               "answer: %s" % (tokenization.printable_text(answer_text)))
       feature = InputFeatures(
           unique_id=unique_id,
