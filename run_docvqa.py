@@ -366,8 +366,8 @@ def evaluate(args, model, tokenizer, labels, pad_token_label_id, mode, prefix=""
     squad_examples = []
 
     for example in examples:
-        context = " ".join(example.doc_tokens)
-        start_position_character = example.start_position
+        # context = " ".join(example.doc_tokens)
+        # start_position_character = example.start_position
         #     for token in example.doc_tokens:
         #          start_position_character += len(token) + 1
 
@@ -376,17 +376,20 @@ def evaluate(args, model, tokenizer, labels, pad_token_label_id, mode, prefix=""
 
         answer_string = ''
 
-        token_length = end_answer_token - start_answer_token
+        token_length = end_answer_token - start_answer_token + 1
 
-        if token_length > 0 and token_length < 50:
-            for i in range(start_answer_token, end_answer_token):
-                answer_string = f"{answer_string} ".join(example.doc_tokens[i])
+        if token_length > 0 and token_length < 50:  # we want the answer to be less than 50 words(=token) long
+            # answer: token 20 : p  and token 21 carter, we want both tokens, hence +1
+            for i in range(start_answer_token, end_answer_token+1):
+                answer_string += example.doc_tokens[i] + " "
 
-        answers = [{"answer_start": start_position_character, "text": answer_string}]
-        print(start_position_character)
-        print(context)
-        squad_examples.append(SquadExample(example.qas_id, example.question_text, context, example.orig_answer_text,
-                                           start_position_character, '', answers=answers,
+        answer_string = answer_string[:-1]  # remove last space
+
+        answers = [{"answer_start": 0, "text": answer_string}]
+        # print(start_position_character)
+        # print(context)
+        squad_examples.append(SquadExample(example.qas_id, example.question_text, "context", example.orig_answer_text,
+                                           0, 'title', answers=answers,
                                            is_impossible=example.is_impossible))
 
 
@@ -467,7 +470,7 @@ def load_and_cache_examples(args, tokenizer, labels, pad_token_label_id, mode):
     return dataset, features, train_examples
 
 
-def main():
+def main(in_args=None):
     parser = argparse.ArgumentParser()
 
     ## Required parameters
@@ -669,7 +672,7 @@ def main():
         action="store_true",
         help="Whether to match OCR start and end index to groundtruth answers",
     )
-    args = parser.parse_args()
+    args = parser.parse_args(in_args)
 
     if (
         os.path.exists(args.output_dir)
@@ -803,10 +806,12 @@ def main():
     # Evaluation
     results = {}
     if args.do_eval and args.local_rank in [-1, 0]:
-        tokenizer = tokenizer_class.from_pretrained(
-            'data_docvqa_train_test', do_lower_case=args.do_lower_case
-        )
-        checkpoints = [args.output_dir]
+        # tokenizer = tokenizer_class.from_pretrained(
+        #     'data_docvqa_train_test', do_lower_case=args.do_lower_case
+        # )
+        #checkpoints = [args.output_dir]
+        checkpoints = [args.model_name_or_path]
+        print("checkpoint: ", checkpoints)
         if args.eval_all_checkpoints:
             checkpoints = list(
                 os.path.dirname(c)
@@ -885,4 +890,23 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    in_args = ["--data_dir", "data",
+    "--model_type", "layoutlm" ,
+    "--model_name_or_path" ,"./models/layoutlm-base-finetuned" ,
+    "--output", "./model",
+    "--do_lower_case" ,
+    "--max_seq_length" ,"512" ,
+    "--do_eval" ,
+    "--num_train_epochs","1" ,
+    "--logging_steps", "10" ,
+    "--evaluate_during_training" ,
+    "--save_steps" ,"10" ,
+    "--output_dir", "./model",
+    "--per_gpu_train_batch_size", "1" ,
+    "--overwrite_output_dir" ,
+    "--cache_dir" ,"./cache/models" ,
+    "--skip_match_answers" ,
+    "--val_json", "./data/val.json" ,
+    "--train_json" ,"./data/train.json" ,
+    "--fp16"]
+    main(in_args)
