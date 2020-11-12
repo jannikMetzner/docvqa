@@ -809,9 +809,7 @@ def main(in_args=None):
         # tokenizer = tokenizer_class.from_pretrained(
         #     'data_docvqa_train_test', do_lower_case=args.do_lower_case
         # )
-        #checkpoints = [args.output_dir]
-        checkpoints = [args.model_name_or_path]
-        print("checkpoint: ", checkpoints)
+        checkpoints = [args.output_dir]
         if args.eval_all_checkpoints:
             checkpoints = list(
                 os.path.dirname(c)
@@ -890,23 +888,4 @@ def main(in_args=None):
 
 
 if __name__ == "__main__":
-    in_args = ["--data_dir", "data",
-    "--model_type", "layoutlm" ,
-    "--model_name_or_path" ,"./models/layoutlm-base-finetuned" ,
-    "--output", "./model",
-    "--do_lower_case" ,
-    "--max_seq_length" ,"512" ,
-    "--do_eval" ,
-    "--num_train_epochs","1" ,
-    "--logging_steps", "10" ,
-    "--evaluate_during_training" ,
-    "--save_steps" ,"10" ,
-    "--output_dir", "./model",
-    "--per_gpu_train_batch_size", "1" ,
-    "--overwrite_output_dir" ,
-    "--cache_dir" ,"./cache/models" ,
-    "--skip_match_answers" ,
-    "--val_json", "./data/val.json" ,
-    "--train_json" ,"./data/train.json" ,
-    "--fp16"]
-    main(in_args)
+    main()
