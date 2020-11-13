@@ -497,7 +497,6 @@ def compute_predictions_logits(
                 orig_doc_start = feature.token_to_orig_map[pred.start_index]
                 orig_doc_end = feature.token_to_orig_map[pred.end_index]
                 orig_tokens = example.doc_tokens[orig_doc_start : (orig_doc_end + 1)]
-                tok_tokens = ["##niko", "##let", "##ta", "went", "home"]
                 #tok_text = tokenizer.convert_tokens_to_string(tok_tokens)
                 tok_text = convert_tokens_to_string(tok_tokens)
 
