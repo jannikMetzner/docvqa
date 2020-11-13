@@ -52,10 +52,9 @@ from transformers import (
     DistilBertForTokenClassification,
     DistilBertTokenizer,
 )
-from transformers.data.metrics.squad_metrics import (
-    compute_predictions_log_probs,
+from squad_metrics import (
     compute_predictions_logits,
-    squad_evaluate,
+    squad_evaluate
 )
 from transformers.data.processors.squad import SquadResult, SquadExample, SquadV1Processor, SquadV2Processor
 
