@@ -21,7 +21,7 @@ from transformers.tokenization_bert import BasicTokenizer
 logger = logging.getLogger(__name__)
 
 
-def convert_tokens_to_string(self, tokens):
+def convert_tokens_to_string(tokens):
     """ Converts a sequence of tokens (string) in a single string. """
     # "##niko", "##let", "##ta", "went", "home"  = ##nikoletta went home
     out_string = " ".join(tokens).replace(" ##", "").strip()
