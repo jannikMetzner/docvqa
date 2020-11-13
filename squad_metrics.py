@@ -96,16 +96,16 @@ def get_raw_scores(examples, preds):
             print("Missing prediction for %s" % qas_id)
             continue
 
-        print("gold_answers: ", gold_answers)
         prediction = preds[qas_id]
-        print("prediction: ",prediction)
         exact_score = max(compute_exact(a, prediction) for a in gold_answers)
         exact_scores[qas_id] = exact_score
-        print("exact_score: ",exact_score)
         f1_score = max(compute_f1(a, prediction) for a in gold_answers)
-        print("f1_score: ",f1_score)
         f1_scores[qas_id] = f1_score
-        #print("------------------------------------------------------")
+        # print("gold_answers: ", gold_answers)
+        # print("prediction: ",prediction)
+        # print("exact_score: ",exact_score)
+        # print("f1_score: ",f1_score)
+        # print("------------------------------------------------------")
 
     return exact_scores, f1_scores
 
