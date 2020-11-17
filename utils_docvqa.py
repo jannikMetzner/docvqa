@@ -109,6 +109,8 @@ def read_docvqa_examples(input_file, is_training, skip_match_answers=True):
       boxes = paragraph["boxes"]
       doc_tokens = paragraph["context"]
       for qa in paragraph["qas"]:
+        if not qa["answer"]:
+            continue
         qas_id = qa["qid"]
         question_text = qa["question"]
         start_position = None
